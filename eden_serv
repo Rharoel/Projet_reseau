@@ -27,6 +27,8 @@
 import sys
 import pygame
 import socket
+import select
+import threading
 
 map = [ [ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' ],
         [ ' ', 'X', 'X', 'X', 'X', 'X', 'X', ' ', 'X', ' ' ],
@@ -45,19 +47,39 @@ unit = 64
 grass = (0x00, 0x90, 0x00)
 
 # def pour la connection
-host=''
-port=
+#host=''
+port=7777
 
 # connection réseau
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((host, "port_connexion entre 1024 et 65535"))
+s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+s.bind(('', 7777))
+
 # ecoute sur le port en parametre le nbr de co clients possible
 s.listen(2)
-# accept la co client
-client, addr = s.accept()
 
-client.send()
+#initialisation des liste des socket et des pseudos
+l=[s]
+pseudo=[""]
 
+while True:
+    x, y, z = select.select(l, [], [])
+    for s2 in x:
+        if s2 == s:
+        # accept la co client
+        client, addr = s.accept()
+        client.send("Veuillez choisir un pseudo:")
+        nick=s.recv(1500)
+        l.append(client)
+        pesudo.append(nick)
+        co=(nick+"Join the lobby")
+        for i range(1,len(l)):
+            if l[i]==s2:
+                l[i].send("")
+            else:
+                l[i].send(co)
+        if len(l) == 2:
+            break
 
 # Pygame initialization
 pygame.init()
