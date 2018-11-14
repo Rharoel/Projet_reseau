@@ -57,37 +57,40 @@ port=7777
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
 
+print (len(sys.argv))
 
-if sys.argv[0] != "":
+if len(sys.argv)==1:
     s.bind(('', 7777))
-
     # ecoute sur le port en parametre le nbr de co clients possible
-    s.listen(2)
+    s.listen(1)
 
     #initialisation des liste des socket et des pseudos
     l=[s]
     pseudo=[""]
-
+    print ("nb")
     while True:
+        print("db")
+        print(l)
         x, y, z = select.select(l, [], [])
+        print ("b")
         for s2 in x:
             if s2 == s:
-            # accept la co client
-            client, addr = s.accept()
-            client.send("Veuillez choisir un pseudo:")
-            nick=s.recv(1500)
-            l.append(client)
-            pesudo.append(nick)
-            co=(nick+"Join the lobby")
-            for i range(1,len(l)):
+                #accept la co client
+                client, addr = s.accept()
+                client.send(b"Veuillez choisir un pseudo:")
+                nick=s.recv(1500)
+                l.append(client)
+                pseudo.append(nick)
+                co=(nick+"Join the lobby")
+            for i in range (1,len(l)):
                 if l[i]==s2:
                     l[i].send("")
                 else:
                     l[i].send(co)
             if len(l) == 2:
                 break
-else :
-    s.connect ((sys.argv[0], 7777))
+elif len(sys.argv)==2:
+    s.connect ((sys.argv[1], 7777))
     
 
 
