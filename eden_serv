@@ -29,6 +29,7 @@ import pygame
 import socket
 import select
 import threading
+import time
 
 map = [ [ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' ],
         [ ' ', 'X', 'X', 'X', 'X', 'X', 'X', ' ', 'X', ' ' ],
@@ -88,20 +89,9 @@ if len(sys.argv)==1:
             if len(l) == 2:
                 break
 elif len(sys.argv)==2:
-    s.connect ((sys.argv[1], 7777))
-    for s2 in x:
-        if s2 == s:
-            #accept la co client
-            client.send(b"Veuillez choisir un pseudo:")
-            nick=client.recv(1500)
-            print (client)
-            l.append(client)
-            pseudo.append(nick)
-            co=(nick+"Join the lobby")
-
-
-
-
+        s.connect ((sys.argv[1], 7777))
+        
+        
 
 
 # Pygame initialization
@@ -161,18 +151,22 @@ while True:
 
     elif e.type == pygame.KEYDOWN:
 
-    # Check for wowoman movements
+    # Check for woman movements
         if e.key == pygame.K_z:
             woman_move = [ 0, -1 ]
+            s.send([ 0, -1 ])
             pass
         elif e.key == pygame.K_s:
             woman_move = [ 0, 1 ]
+            s.send([ 0, 1 ])
             pass
         elif e.key == pygame.K_q:
             woman_move = [ -1, 0 ]
+            s.send([ -1, 0 ])
             pass
         elif e.key == pygame.K_d:
             woman_move = [ 1, 0 ]
+            s.send([ 1, 0 ])
             pass
 
     # Check for man movements
@@ -188,6 +182,7 @@ while True:
         elif e.key == pygame.K_RIGHT:
             man_move = [ 1, 0 ]
             pass
+        man_move=s.recv(1500)
 
     #else:
     #    print(e)
